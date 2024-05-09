@@ -75,7 +75,7 @@ jobs:
           # temp
           git config --global user.email "bot@github.com"
           git config --global user.name "Bot"
-          printf "more text\n" >> .github/workflows/hello.txt
+          printf "more text\n" >> ./hello.txt
           git commit -am "update hello text";
           
           git pull --rebase
