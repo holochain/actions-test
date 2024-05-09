@@ -73,6 +73,8 @@ jobs:
           # nix run .#scripts-repo-flake-update $HOLONIX_VERSION
           
           # temp
+          git config --global user.email "bot@github.com"
+          git config --global user.name "Bot"
           printf "more text\n" >> .github/workflows/hello.txt
           git commit -am "update hello text";
           
