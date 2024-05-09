@@ -44,11 +44,33 @@ jobs:
     if: ${{ startsWith(needs.action_pr_comment.outputs.action, 'flake_update') }}
     steps:
       - name: Configure
+        id: configure
         env:
           ACTION: ${{ needs.action_pr_comment.outputs.action }}
           NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ secrets.HRA_GITHUB_TOKEN }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           HOLONIX_VERSION=$(echo $ACTION | cut -b 14- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-          gh pr comment $NUMBER --repo holochain/actions-test --body "Got it, will try to update inputs for Holonix version $HOLONIX_VERSION"
-        
+          gh pr comment $NUMBER --repo holochain/actions-test --body "Got it, will try to update inputs for Holonix version $HOLONIX_VERSION\n\n[Workflow](https://github.com/holochain/actions-test/actions/runs/$RUN_ID)"
+          
+          echo "holonix_version=${HOLONIX_VERSION}" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v26
+      - uses: cachix/cachix-action@v14
+        with:
+          name: holochain-ci
+#      - name: set up git config
+#        run: |
+#          ./scripts/ci-git-config.sh
+      - name: update source
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          HOLONIX_VERSION: ${{ steps.configure.outputs.holonix_version }}
+          GITHUB_TOKEN: ${{ inputs.HRA_GITHUB_TOKEN }}
+        run: |
+          gh pr checkout $NUMBER --repo holochain/actions-test
+          # nix run .#scripts-repo-flake-update $HOLONIX_VERSION
+          printf "more text\n" >> .github/workflows/hello.txt
+          git pull --rebase
+          git push
