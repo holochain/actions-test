@@ -33,7 +33,7 @@ jobs:
           echo "action=${COMMAND}" >> "$GITHUB_OUTPUT"
         env:
           USER: ${{ github.event.sender.login }}
-          ALLOWED_USERS: ${{ join(fromJson('["ThetaSinner"]'), '\n') }}
+          ALLOWED_USERS: ${{ join(fromJson('["ThetaSinner", "jost-s", "maackle", "thedavidmeister", "steveej", "neonphog", "matthme", "c12i"]'), '\n') }}
           COMMENT: ${{ github.event.comment.body }}
     outputs:
       action: ${{ steps.dispatch.outputs.action }}
