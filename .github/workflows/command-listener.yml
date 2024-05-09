@@ -33,11 +33,13 @@ jobs:
           USER: ${{ github.event.comment.user.name }}
           ALLOWED_USERS: ${{ join(fromJson('["ThetaSinner"]'), '\n') }}
           COMMENT: ${{ github.event.comment.body }}
+    outputs:
+      action: ${{ steps.dispatch.outputs.action }}
   flake_update:
     name: Flake update
     runs-on: ubuntu-latest
     needs: [action_pr_comment]
-    if: ${{ success() && steps.dispatch.outputs.action == 'flake_update' }}
+    if: ${{ success() && jobs.action_pr_comment.outputs.action == 'flake_update' }}
     steps:
       - name: Flake update
         run: |
