@@ -19,9 +19,7 @@ jobs:
         run: |
           set -euo pipefail
           
-          echo "Checking allowed users: $ALLOWED_USERS"
-          
-          if echo "$ALLOWED_USERS" | grep -q "^${USER}$"; then
+          if echo "$ALLOWED_USERS" | grep -q "${USER}"; then
             echo "User $USER is allowed to run commands"
           else
             echo "User $USER is not allowed to run commands"
