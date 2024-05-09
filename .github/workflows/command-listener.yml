@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Dispatch
         id: dispatch
+        env:
+          USER: ${{ github.event.sender.login }}
+          ALLOWED_USERS: ${{ join(fromJson('["ThetaSinner", "jost-s", "maackle", "thedavidmeister", "steveej", "neonphog", "matthme", "c12i"]'), '\n') }}
+          COMMENT: ${{ github.event.comment.body }}
         run: |
           set -euo pipefail
           
@@ -31,10 +35,6 @@ jobs:
           echo "Setting command '$COMMAND'"
           
           echo "action=${COMMAND}" >> "$GITHUB_OUTPUT"
-        env:
-          USER: ${{ github.event.sender.login }}
-          ALLOWED_USERS: ${{ join(fromJson('["ThetaSinner", "jost-s", "maackle", "thedavidmeister", "steveej", "neonphog", "matthme", "c12i"]'), '\n') }}
-          COMMENT: ${{ github.event.comment.body }}
     outputs:
       action: ${{ steps.dispatch.outputs.action }}
   flake_update:
@@ -43,6 +43,12 @@ jobs:
     needs: [action_pr_comment]
     if: ${{ startsWith(needs.action_pr_comment.outputs.action, 'flake_update') }}
     steps:
-      - name: Flake update
+      - name: Configure
+        env:
+          ACTION: ${{ needs.action_pr_comment.outputs.action }}
+          NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.HRA_GITHUB_TOKEN }}
         run: |
-          echo "Flake update"
+          HOLONIX_VERSION=$(echo $ACTION | cut -b 14- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          gh pr comment $NUMBER -b "Got it, will try to update inputs for Holonix version $HOLONIX_VERSION"
+        
