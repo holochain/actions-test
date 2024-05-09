@@ -23,7 +23,7 @@ jobs:
           fi
           
           COMMAND=""
-          if [[ "$COMMENT" == "@hra*" ]]; then
+          if [[ "$COMMENT" == @hra* ]]; then
             echo "Comment is a command"
             COMMAND=$(echo "$COMMENT" | cut -b 6- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           fi
