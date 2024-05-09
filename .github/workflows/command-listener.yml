@@ -67,7 +67,7 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
           HOLONIX_VERSION: ${{ steps.configure.outputs.holonix_version }}
-          GH_TOKEN: ${{ inputs.HRA_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.HRA_GITHUB_TOKEN }}
         run: |
           gh pr checkout $NUMBER --repo holochain/actions-test
           # nix run .#scripts-repo-flake-update $HOLONIX_VERSION
