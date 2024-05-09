@@ -23,7 +23,7 @@ jobs:
             echo "User $USER is allowed to run commands"
           else
             echo "User $USER is not allowed to run commands"
-            exit 1
+            exit 0
           fi
           
           COMMAND=""
