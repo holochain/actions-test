@@ -71,6 +71,10 @@ jobs:
         run: |
           gh pr checkout $NUMBER --repo holochain/actions-test
           # nix run .#scripts-repo-flake-update $HOLONIX_VERSION
+          
+          # temp
           printf "more text\n" >> .github/workflows/hello.txt
+          git commit -am "update hello text";
+          
           git pull --rebase
           git push
