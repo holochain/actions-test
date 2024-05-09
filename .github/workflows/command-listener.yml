@@ -28,6 +28,8 @@ jobs:
             COMMAND=$(echo "$COMMENT" | cut -b 6- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
           fi
           
+          echo "Setting command '$COMMAND'"
+          
           echo "action=${COMMAND}" >> "$GITHUB_OUTPUT"
         env:
           USER: ${{ github.event.sender.login }}
