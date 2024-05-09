@@ -39,7 +39,7 @@ jobs:
     name: Flake update
     runs-on: ubuntu-latest
     needs: [action_pr_comment]
-    if: ${{ needs.action_pr_comment.outputs.action == 'flake_update' }}
+    if: ${{ startsWith(needs.action_pr_comment.outputs.action, 'flake_update') }}
     steps:
       - name: Flake update
         run: |
