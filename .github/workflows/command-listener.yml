@@ -1,0 +1,42 @@
+name: command-listener
+
+on:
+  issue_comment:
+    types: ["created"]
+
+jobs:
+  action_pr_comment:
+    name: Action PR comment
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          set -euo pipefail
+          
+          if echo "$ALLOWED_USERS" | grep -q "^${USER}$"; then
+            echo "User $USER is allowed to run commands"
+          else
+            echo "User $USER is not allowed to run commands"
+            exit 1
+          fi
+          
+          COMMAND=""
+          if [[ "$COMMENT" == "@hra*" ]]; then
+            echo "Comment is a command"
+            COMMAND=$(echo "$COMMENT" | cut -b 6- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          fi
+          
+          echo "action=${COMMAND}" >> "$GITHUB_OUTPUT"
+        env:
+          USER: ${{ github.event.comment.user.name }}
+          ALLOWED_USERS: ${{ join(fromJson('["ThetaSinner"]'), '\n') }}
+          COMMENT: ${{ github.event.comment.body }}
+  flake_update:
+    name: Flake update
+    runs-on: ubuntu-latest
+    needs: [action_pr_comment]
+    if: ${{ steps.action_pr_comment.outputs.action == 'flake_update' }}
+    steps:
+      - name: Flake update
+        run: |
+          echo "Flake update"
